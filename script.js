@@ -43,8 +43,30 @@ document.addEventListener('DOMContentLoaded', function () {
         resizeMasonryItems();
     });
 
+    const siteHeader = document.querySelector('.site-header');
+    const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelectorAll('.site-nav a');
     const sectionTargets = [...document.querySelectorAll('main section[id]')].filter((section) => section.id !== 'home');
+
+    function closeNav() {
+        siteHeader.classList.remove('nav-open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.setAttribute('aria-label', 'Open navigation');
+    }
+
+    navToggle.addEventListener('click', () => {
+        const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
+        siteHeader.classList.toggle('nav-open', !isOpen);
+        navToggle.setAttribute('aria-expanded', String(!isOpen));
+        navToggle.setAttribute('aria-label', isOpen ? 'Open navigation' : 'Close navigation');
+    });
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && navToggle.getAttribute('aria-expanded') === 'true') {
+            closeNav();
+            navToggle.focus();
+        }
+    });
 
     function setActiveNav(linkId) {
         navLinks.forEach((link) => {
@@ -97,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (targetId) {
                 setActiveNav(targetId);
             }
+            closeNav();
         });
     });
 
