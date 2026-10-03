@@ -19,8 +19,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     revealItems.forEach((item) => revealObserver.observe(item));
 
+    const masonryGrids = document.querySelectorAll('.digital-design-grid, .digital-drawing-grid, .digital-modeling-grid');
+    masonryGrids.forEach((masonryGrid) => {
+        const resizeMasonryItems = () => {
+            const styles = getComputedStyle(masonryGrid);
+            const rowHeight = parseFloat(styles.gridAutoRows);
+            const rowGap = parseFloat(styles.rowGap);
+
+            masonryGrid.querySelectorAll('.work-card').forEach((card) => {
+                const image = card.querySelector('img');
+                if (!image || !image.complete || !image.naturalHeight) return;
+
+                const imageHeight = image.getBoundingClientRect().height;
+                const rowSpan = Math.ceil((imageHeight + rowGap) / (rowHeight + rowGap));
+                card.style.gridRowEnd = `span ${rowSpan}`;
+            });
+        };
+
+        masonryGrid.querySelectorAll('img').forEach((image) => {
+            image.addEventListener('load', resizeMasonryItems);
+        });
+        window.addEventListener('resize', resizeMasonryItems);
+        resizeMasonryItems();
+    });
+
     const navLinks = document.querySelectorAll('.site-nav a');
-    const sectionTargets = document.querySelectorAll('main section[id]');
+    const sectionTargets = [...document.querySelectorAll('main section[id]')].filter((section) => section.id !== 'home');
 
     function setActiveNav(linkId) {
         navLinks.forEach((link) => {
@@ -34,18 +58,38 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                setActiveNav(entry.target.id);
+    function updateActiveNavFromScroll() {
+        let currentId = 'about';
+        let smallestDistance = Number.POSITIVE_INFINITY;
+        const viewportAnchor = window.innerHeight * 0.35;
+
+        sectionTargets.forEach((section) => {
+            const rect = section.getBoundingClientRect();
+            const sectionCenter = (rect.top + rect.bottom) / 2;
+            const distance = Math.abs(sectionCenter - viewportAnchor);
+
+            if (rect.bottom > 0 && rect.top < window.innerHeight) {
+                if (distance < smallestDistance) {
+                    smallestDistance = distance;
+                    currentId = section.id;
+                }
             }
         });
+
+        setActiveNav(currentId);
+    }
+
+    const sectionObserver = new IntersectionObserver(() => {
+        updateActiveNavFromScroll();
     }, {
         threshold: 0,
         rootMargin: '-25% 0px 0px 0px'
     });
 
     sectionTargets.forEach((section) => sectionObserver.observe(section));
+    window.addEventListener('scroll', updateActiveNavFromScroll, { passive: true });
+    window.addEventListener('load', updateActiveNavFromScroll);
+    updateActiveNavFromScroll();
 
     navLinks.forEach((link) => {
         link.addEventListener('click', function () {
