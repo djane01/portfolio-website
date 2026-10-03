@@ -43,28 +43,37 @@ document.addEventListener('DOMContentLoaded', function () {
         resizeMasonryItems();
     });
 
-    const siteHeader = document.querySelector('.site-header');
-    const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelectorAll('.site-nav a');
+    const navToggle = document.querySelector('.nav-toggle');
+    const siteNav = document.querySelector('.site-nav');
+    const siteHeader = document.querySelector('.site-header');
+    const cvButton = document.querySelector('.header-cv-button');
     const sectionTargets = [...document.querySelectorAll('main section[id]')].filter((section) => section.id !== 'home');
 
-    function closeNav() {
-        siteHeader.classList.remove('nav-open');
-        navToggle.setAttribute('aria-expanded', 'false');
-        navToggle.setAttribute('aria-label', 'Open navigation');
+    function setMobileNavOpen(isOpen) {
+        siteNav.classList.toggle('is-open', isOpen);
+        siteHeader.classList.toggle('mobile-menu-open', isOpen);
+        navToggle.setAttribute('aria-expanded', String(isOpen));
+        navToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
     }
 
     navToggle.addEventListener('click', () => {
-        const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
-        siteHeader.classList.toggle('nav-open', !isOpen);
-        navToggle.setAttribute('aria-expanded', String(!isOpen));
-        navToggle.setAttribute('aria-label', isOpen ? 'Open navigation' : 'Close navigation');
+        setMobileNavOpen(navToggle.getAttribute('aria-expanded') !== 'true');
     });
 
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && navToggle.getAttribute('aria-expanded') === 'true') {
-            closeNav();
-            navToggle.focus();
+    cvButton.addEventListener('click', () => {
+        setMobileNavOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            setMobileNavOpen(false);
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 480) {
+            setMobileNavOpen(false);
         }
     });
 
@@ -119,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (targetId) {
                 setActiveNav(targetId);
             }
-            closeNav();
+            setMobileNavOpen(false);
         });
     });
 
