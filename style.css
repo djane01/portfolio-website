@@ -631,7 +631,7 @@ header.site-header {
 
     .site-nav {
         gap: clamp(0.75rem, 2vw, 1.25rem);
-        margin-bottom:5px;
+        margin-bottom: 0;
     }
 
     .site-nav a {
@@ -705,7 +705,6 @@ header.site-header {
 
     .site-nav a {
         font-size: 0.9rem;
-        margin-bottom:5px;
     }
 
     .main,
