@@ -695,9 +695,13 @@ header.site-header {
         width: 100%;
     }
 
-    .logo-top-link img {
+    .contact .logo-top-link {
+        margin-top: 1.5rem;
+    }
+
+    .contact .logo-top-link img {
         margin-bottom: 0;
-        transform: scale(1.5);
+        transform: scale(2);
     }
 }
 
@@ -803,12 +807,13 @@ header.site-header {
 
     .about-right-panel h1 {
         font-size: 2rem;
+        text-align: center;
     }
 
     .about-right-panel p {
         font-size: 1rem;
         line-height: 1.7;
-        text-align: left;
+        text-align: justify;
     }
 
     .works {
@@ -868,8 +873,8 @@ header.site-header {
         font-size: 0.85rem;
     }
 
-    .logo-top-link img {
-        transform: scale(1.2);
+    .contact .logo-top-link img {
+        transform: scale(1.7);
     }
 
     .site-footer {
